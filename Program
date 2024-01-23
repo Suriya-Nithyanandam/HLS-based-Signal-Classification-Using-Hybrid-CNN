@@ -1,4 +1,4 @@
- # Main Program
+The main Program
 
 from scipy.io import loadmat
 from pandas import factorize
