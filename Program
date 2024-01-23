@@ -1,4 +1,4 @@
-The main Program
+### The main Program
 
 from scipy.io import loadmat
 from pandas import factorize
@@ -565,3 +565,28 @@ for i in range(len(prediction[:,0])):
 print("Accuracy = {}".format(accuracy_score(np.argmax(Y_test,axis=1),np.argmax(prediction,axis=1))))
 
 Y_Pred[:20], Y_Test[:20]
+
+
+### The HLS implementation Part
+
+pip install hls4ml[profiling]
+pip install hls4ml
+
+with open("/content/drive/MyDrive/Colab Notebooks/model2.json","r") as file:
+    jsonData = json.load(file)
+print("Datatype of variable: ", type(jsonData))
+for i in jsonData:
+    print(i, jsonData[i])
+t = {'OutputDir': '/home/student', 'ProjectName': 'hlstest', 'Backend': 'Vivado', 'Part': 'xc7z020clg400-1', 'ClockPeriod': 5, 'IOType': 'io_parallel', 'HLSConfig': {'Model': {'Precision': 'ap_fixed<16,6>', 'ReuseFactor': 1}}, 'KerasJson': '/content/drive/MyDrive/Colab Notebooks/model2.json', 'KerasH5': '/content/drive/MyDrive/Colab Notebooks/cnn3_model.h5'}
+#config = hls4ml.utils.config_from_keras_model(jsonData,granularity='name')
+print(t)
+hls_model = hls4ml.converters.keras_to_hls(t)
+hls4ml.utils.plot_model(hls_model,show_precision=True,show_shapes=True,to_file=None)
+hls_model.compile()
+#Y_hls_std = hls_model.predict(np.ascontiguousarray(X_test))
+hls_model.build()
+#from hls4ml.model import profiling
+#hls_model_std = hls4ml.converters.convert_from_keras_model(jsonData,hls_config=t,output_dir='/content/drive/MyDrive/Colab Notebooks/out',part='xcku115-flvb2104-2-i')
+
+import os
+os.environ['PATH'] += os.pathsep + '/home/student/Vivado/2019.2/bin'
